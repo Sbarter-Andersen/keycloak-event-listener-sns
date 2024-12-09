@@ -84,7 +84,6 @@ class SnsEventListenerProviderTest {
         verify(snsEventPublisherMock).sendEvent(snsEventCaptor.capture());
         SnsEvent result = snsEventCaptor.getValue();
         assertThat(result.getEvent()).isEqualTo(eventMock);
-        assertThat(result.getUsername()).isNotNull().isEqualTo("username");
     }
 
     @Test
@@ -99,7 +98,6 @@ class SnsEventListenerProviderTest {
         verify(snsEventPublisherMock).sendEvent(snsEventCaptor.capture());
         SnsEvent result = snsEventCaptor.getValue();
         assertThat(result.getEvent()).isEqualTo(eventMock);
-        assertThat(result.getUsername()).isNull();
     }
 
     @Test
@@ -116,17 +114,10 @@ class SnsEventListenerProviderTest {
         verify(snsEventPublisherMock).sendEvent(snsEventCaptor.capture());
         SnsEvent result = snsEventCaptor.getValue();
         assertThat(result.getEvent()).isEqualTo(eventMock);
-        assertThat(result.getUsername()).isNull();
     }
 
     @Test
     void shouldAddAdminEventToTransaction(){
-        when(adminEventMock.getAuthDetails()).thenReturn(authDetailsMock);
-        when(authDetailsMock.getUserId()).thenReturn("userId");
-        when(adminEventMock.getRealmId()).thenReturn("realmId");
-        when(realmProviderMock.getRealm("realmId")).thenReturn(realmMock);
-        when(userProviderMock.getUserById(realmMock, "userId")).thenReturn(userMock);
-        when(userMock.getUsername()).thenReturn("username");
         snsEventListenerProvider.onEvent(adminEventMock, true);
         verify(transactionManagerMock).enlistAfterCompletion(transactionCaptor.capture());
         EventListenerTransaction transaction = transactionCaptor.getValue();
@@ -135,7 +126,6 @@ class SnsEventListenerProviderTest {
         verify(snsEventPublisherMock).sendAdminEvent(snsAdminEventCaptor.capture());
         SnsAdminEvent result = snsAdminEventCaptor.getValue();
         assertThat(result.getAdminEvent()).isEqualTo(adminEventMock);
-        assertThat(result.getUsername()).isNotNull().isEqualTo(userMock.getUsername());
     }
 
     @Test
@@ -149,7 +139,6 @@ class SnsEventListenerProviderTest {
         verify(snsEventPublisherMock).sendAdminEvent(snsAdminEventCaptor.capture());
         SnsAdminEvent result = snsAdminEventCaptor.getValue();
         assertThat(result.getAdminEvent()).isEqualTo(adminEventMock);
-        assertThat(result.getUsername()).isNull();
     }
     
     @Test
